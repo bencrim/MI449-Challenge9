@@ -1,26 +1,23 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
+<script setup>
+import { ref, onMounted } from 'vue'
+import { supabase } from './libs/supabaseClient'
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
+const countries = ref([])
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
+async function getCountries() {
+  const { data } = await supabase.from('countries').select()
+  countries.value = data
 }
+
+onMounted(() => {
+  getCountries()
+})
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+<template>
+  <h1>This information is coming from my Supabase API table</h1>
+  <h2>I think I like React more than Vue so far...</h2>
+  <ul>
+    <li v-for="country in countries" :key="country.id">{{ country.name }}</li>
+  </ul>
+</template>
